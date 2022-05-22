@@ -15,7 +15,7 @@ tail.on('line', line => parser.parseLine(line, async parsed => {
 
     // /repository/{repository}/{group}/{artifact}/{version}/{file}
     const urlComponents = path.split('/').slice(2);
-    if (urlComponents.length < 6) return;
+    if (urlComponents.length < 5) return;
 
     const repository = urlComponents.shift();
     const file = urlComponents.pop();
