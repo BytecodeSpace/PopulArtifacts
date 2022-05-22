@@ -3,3 +3,4 @@ NEXUS_NGINX_LOG
 yarn-error.log
 .idea/
 .DS_Store
+knexfile.js
