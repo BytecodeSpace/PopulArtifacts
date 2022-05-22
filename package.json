@@ -1,0 +1,20 @@
+{
+  "name": "PopulArtifacts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "description": "PopulArtifacts tracks the popularity of activities on a maven repository by parsing NGINX access logs.",
+  "repository": "https://github.com/BytecodeSpace/PopulArtifacts",
+  "author": "Noah van der Aa <ndvdaa@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "express": "^4.18.1",
+    "knex": "^2.0.0",
+    "mysql2": "^2.3.3",
+    "nginxparser": "^2.1.0",
+    "tail": "^2.2.4"
+  },
+  "scripts": {
+    "start": "knex migrate:latest && node ."
+  }
+}
