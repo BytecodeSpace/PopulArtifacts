@@ -8,10 +8,10 @@ const tail = new Tail(process.env.LOG_FILE || './NEXUS_NGINX_LOG');
 const parser = new NginxParser('$remote_addr - $remote_user [$time_local] "$method $path HTTP/$http_version" $status $body_bytes_sent "$http_referer" "$http_user_agent"');
 
 tail.on('line', line => parser.parseLine(line, async parsed => {
-    const {method, path} = parsed;
+    const {method, path, status} = parsed;
 
     // This .toString is not redundant, it converts path into a string in case it's undefined
-    if (method !== 'GET' || !path.toString().startsWith('/repository/')) return;
+    if (method !== 'GET' || status !== '200' || !path.toString().startsWith('/repository/')) return;
 
     // /repository/{repository}/{group}/{artifact}/{version}/{file}
     const urlComponents = path.split('/').slice(2);
