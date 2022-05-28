@@ -64,6 +64,8 @@ tail.on('line', line => parser.parseLine(line, async parsed => {
         });
 }));
 
+tail.on('error', error => console.error(error));
+
 const port = process.env.HTTP_PORT || 3000;
 app.listen(port, () => {
     console.log(`Listening on port ${port}!`);
