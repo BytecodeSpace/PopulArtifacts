@@ -17,7 +17,6 @@ const parser = new NginxParser('$remote_addr - $remote_user [$time_local] "$meth
     });
 
     linesplitter.on('line', (line) => {
-        console.log(line);
         handleLine(line);
     });
 })();
