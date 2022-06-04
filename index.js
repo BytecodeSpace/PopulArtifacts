@@ -1,13 +1,28 @@
 const express = require('express');
-const Tail = require('tail').Tail;
 const NginxParser = require('nginxparser');
+const readline = require('readline');
+const TailFile = require('@logdna/tail-file');
 
 const app = express();
 const knex = require('knex')(require('./knexfile.js'));
-const tail = new Tail(process.env.LOG_FILE || './NEXUS_NGINX_LOG');
+const tail = new TailFile(process.env.LOG_FILE || './NEXUS_NGINX_LOG', {encoding: 'utf8'})
 const parser = new NginxParser('$remote_addr - $remote_user [$time_local] "$method $path HTTP/$http_version" $status $body_bytes_sent "$http_referer" "$http_user_agent"');
 
-tail.on('line', line => parser.parseLine(line, async parsed => {
+(async () => {
+    tail.on('tail_error', e => console.error(e));
+
+    await tail.start()
+    const linesplitter = readline.createInterface({
+        input: tail
+    });
+
+    linesplitter.on('line', (line) => {
+        console.log(line);
+        handleLine(line);
+    });
+})();
+
+handleLine = line => parser.parseLine(line, async parsed => {
     const {method, path, status} = parsed;
 
     // This .toString is not redundant, it converts path into a string in case it's undefined
@@ -62,7 +77,7 @@ tail.on('line', line => parser.parseLine(line, async parsed => {
         .merge({
             downloads: knex.raw('?? + ?', ['downloads', 1])
         });
-}));
+});
 
 tail.on('error', error => console.error(error));
 
