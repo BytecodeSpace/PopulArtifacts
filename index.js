@@ -38,7 +38,7 @@ handleLine = line => parser.parseLine(line, async parsed => {
     const group = urlComponents.join('.');
 
     // Only care about actual downloads.
-    if (file.endsWith('.pom') || file.endsWith('.md5') || file.endsWith('.sha1')) return;
+    if (file === 'maven-metadata.xml' || file.endsWith('.pom') || file.endsWith('.md5') || file.endsWith('.sha1')) return;
 
     let time = new Date();
     time.setMinutes(0, 0, 0); // Group by hour
