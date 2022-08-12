@@ -21,6 +21,7 @@ const parser = new NginxParser('$remote_addr - $remote_user [$time_local] "$meth
     });
 })();
 
+const IGNORED_EXTENSIONS = ['.module', '.pom', '.md5', '.sha1', '.sha256', '.sha512'];
 handleLine = line => parser.parseLine(line, async parsed => {
     const {method, path, status} = parsed;
 
@@ -32,13 +33,13 @@ handleLine = line => parser.parseLine(line, async parsed => {
     if (urlComponents.length < 5) return;
 
     const repository = urlComponents.shift();
-    const file = urlComponents.pop();
+    const file = urlComponents.pop().toLowerCase();
     const version = urlComponents.pop();
     const artifact = urlComponents.pop();
     const group = urlComponents.join('.');
 
     // Only care about actual downloads.
-    if (file === 'maven-metadata.xml' || file.endsWith('.pom') || file.endsWith('.md5') || file.endsWith('.sha1')) return;
+    if (file === 'maven-metadata.xml' || IGNORED_EXTENSIONS.indexOf(file) !== -1) return;
 
     let time = new Date();
     time.setMinutes(0, 0, 0); // Group by hour
